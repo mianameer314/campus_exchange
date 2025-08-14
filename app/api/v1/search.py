@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from typing import List, Optional
 
-from app.db.session import SessionLocal
+from app.api.deps import get_db
 from app.models.listing import Listing
 from app.schemas.listing import ListingOut
 
@@ -15,8 +15,7 @@ def search_listings(
     category: Optional[str] = None,
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
-    local_kw: Optional[str] = None,
-    db: Session = Depends(SessionLocal)
+    db: Session = Depends(get_db)
 ):
     stmt = select(Listing)
 
