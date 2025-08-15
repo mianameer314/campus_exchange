@@ -1,15 +1,23 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
+
+# now update this README file for all days 1 to 4 tasks accoridnly
+
+Here is the updated README file that includes detailed descriptions of the Day 1 to Day 4 tasks reflecting your recent development progress, including database migrations, model updates, search and filter API implementation, and project modularization:
+
+***
+
 # Campus Exchange API
 
 A complete backend platform for a university secondhand marketplace built with FastAPI.
 
----
+***
 
 ## Features
 
 - User Authentication and JWT-based login/signup
 - Email OTP verification and ID upload with admin approval
 - Listings management: create, update, delete, view, and search listings
-- Search listings by query, category, price range
+- Search listings by query, category, price range, university, and sorting
 - Favorites management for users
 - Notifications for actions and updates
 - Admin panel to manage users and verifications
@@ -21,216 +29,188 @@ A complete backend platform for a university secondhand marketplace built with F
 - Interactive API docs with Swagger UI and ReDoc
 - Health check endpoint
 
----
+***
+
+## Development Progress by Days
+
+### Day 1: Initial Setup and Models
+
+- Set up FastAPI project structure with modular API routers.
+- Defined core SQLAlchemy ORM models, including the `Listing` model with fields like `title`, `description`, `category`, `price`, `owner_id`, and timestamps.
+- Established PostgreSQL database connection and session management with `sqlalchemy` and Alembic migrations.
+
+
+### Day 2: Enhancements to Listings Model
+
+- Added support for images (stored as JSON array of URLs), listing status (`ACTIVE`, `SOLD`, `ARCHIVED`), and `updated_at` timestamp to listings.
+- Implemented Alembic migration to add these new columns with safeguards to avoid duplication.
+- Indexed listing status for efficient filtering queries.
+
+
+### Day 3: Full-Text Search with PostgreSQL
+
+- Integrated PostgreSQL full-text search functionality by adding a `search_vector` column of type TSVECTOR to the `listings` table.
+- Wrote Alembic migration to add `search_vector` column, create a GIN index on it, implemented trigger function and trigger to auto-update the vector on INSERT and UPDATE.
+- Updated SQLAlchemy `Listing` model to include deferred loading of the `search_vector` column for efficient search queries.
+
+
+### Day 4: Search \& Filter API Endpoint and Project Modularization
+
+- Developed a robust search API endpoint supporting:
+    - Full-text search on listing titles and descriptions using PostgreSQL TSVECTOR
+    - Filtering by category, price range, and university
+    - Sorting by various fields like creation date or price, with ascending/descending options
+    - Pagination with configurable page number and page size
+- Refactored project structure into clearly separated folders `crud/` (database operations), `services/` (business logic), and `api/` (HTTP endpoints).
+- Enhanced maintainability by isolating responsibilities and simplifying import paths.
+- Added comprehensive validation and error handling for API query parameters.
+
+***
 
 ## Prerequisites
 
-- Docker & Docker Compose (recommended)
+- Docker \& Docker Compose (recommended)
 - Python 3.8+
 - PostgreSQL database (or use Dockerized Postgres)
 - Git (to clone the repo)
 
----
+***
 
-## Full Setup & Installation Guide
+## Full Setup \& Installation Guide
 
 ### 1. Clone the Repository
 
-```
-
+```bash
 git clone https://github.com/mianameer314/campus_exchange.git
 cd campus_exchange
-
 ```
+
 
 ### 2. Environment Setup
 
-Copy the example environment variables and update them with your own values:
+Copy example environment variables and update them with your values:
 
-```
-
+```bash
 cp .env.example .env
-
 ```
 
-Edit `.env` and set the following variables:
+Edit `.env` and set:
 
 - `SQLALCHEMY_DATABASE_URI` (e.g., `postgresql://username:password@localhost:5432/dbname`)
-- `ADMIN_EMAIL` (your admin email)
-- `ADMIN_PASSWORD` (your admin password)
-- Other optional settings can be adjusted as needed
+- `ADMIN_EMAIL` and `ADMIN_PASSWORD`
+- Other optional environment variables as needed
+
 
 ### 3. Docker (Recommended)
 
-If you have Docker installed, you can build and run the app quickly:
+To build and run the app with Docker:
 
-```
-
+```bash
 docker-compose up --build
-
 ```
 
-This will:
+This builds containers for FastAPI and PostgreSQL, applies migrations, and exposes the app at `http://localhost:8000`
 
-- Build the FastAPI backend container
-- Start a PostgreSQL database container
-- Run migrations automatically
-- Make the app available on `http://localhost:8000`
+### 4. Running Locally Without Docker
 
-You can stop docker with `Ctrl+C` or:
+#### a. Create \& activate virtual environment
 
-```
-
-docker-compose down
-
-```
-
-### 4. Running Locally without Docker
-
-If you want to run the app without Docker:
-
-#### a. Create and activate a virtual environment
-
-```
-
+```bash
 python3 -m venv .venv
-source .venv/bin/activate   \# On Windows: .venv\Scripts\activate
-
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 ```
+
 
 #### b. Install dependencies
 
-```
-
+```bash
 pip install -r requirements.txt
-
 ```
+
 
 #### c. Run database migrations
 
-Make sure your Postgres database is running and accessible via the connection string in `.env`.
+Make sure PostgreSQL is running and accessible via connection URL, then:
 
-Run migrations with Alembic:
-
-```
-
+```bash
 alembic upgrade head
-
 ```
 
-#### d. Start the FastAPI app with live reload
 
-```
+#### d. Start FastAPI app with live reload
 
+```bash
 uvicorn app.main:app --reload
-
 ```
 
-Your app will be accessible at: `http://localhost:8000`
+API will be available at `http://localhost:8000`
 
-### 5. API Documentation
+***
 
-Access interactive documentation:
+## API Documentation
+
+Interactive API documentation available at:
 
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
-### 6. Testing the API
+***
 
-Use the Swagger UI to test endpoints or tools like Postman or curl.
+## Example Search API Usage
 
-Example curl to test search:
-
+```bash
+curl "http://localhost:8000/api/v1/listings/search?q=book&category=Books&min_price=0&max_price=1000&university=Attock&sort_by=created_at&sort_order=desc&page=1&page_size=10"
 ```
 
-curl "http://localhost:8000/api/v1/search?q=book\&category=Books"
+Supports:
 
-```
+- Keyword search (`q`)
+- Filters: `category`, `min_price`, `max_price`, `university`
+- Sorting: `sort_by` (e.g., `created_at`), `sort_order` (`asc` or `desc`)
+- Pagination: `page`, `page_size`
 
----
+***
 
-## Key Project Structure Overview
+## Project Structure
 
-- `app/main.py`: App startup, router inclusions, middleware, OpenAPI settings
-- `app/api/v1/`: Modular API routers for auth, listings, search, verification, admin, AI, chat, etc.
-- `app/db/session.py`: Database engine and sessionmaker configuration with dependency wrapper
-- `app/models/`: SQLAlchemy ORM models representing DB tables
-- `app/schemas/`: Pydantic models for data validation and serialization
-- `app/core/`: Core configuration, security utilities, hashing and token management
-- `alembic/`: Database migrations management
+- `app/main.py`: Application entry, router registrations
+- `app/api/v1/`: API route modules (auth, listings, search, etc.)
+- `app/crud/`: Database CRUD operations
+- `app/models/`: SQLAlchemy ORM models
+- `app/schemas/`: Pydantic request and response schemas
+- `app/services/`: Business and search logic
+- `app/db/`: Database session and engine configuration
+- `alembic/`: Database migration scripts
 
----
+***
 
-## Important Notes
+## Tips \& Notes
 
-### Using DB Session Dependency Correctly
+- Always get DB session via `get_db` dependency to avoid connection issues.
+- Clear FastAPI OpenAPI schema cache after changing dependencies/routes by setting `app.openapi_schema = None`.
+- Ensure route ordering to prevent conflicts, e.g., `/listings/search` before `/listings/{listing_id}`.
+- Frontend should present search/filter parameters in user-friendly dropdowns, text inputs, and sliders as appropriate.
+- Project is modularized extensively to support maintainability and future enhancements.
 
-Always use the provided `get_db` dependency function to get a SQLAlchemy session:
-
-```
-
-from app.db.session import get_db
-from sqlalchemy.orm import Session
-from fastapi import Depends
-
-def get_db():
-db = SessionLocal()
-try:
-yield db
-finally:
-db.close()
-
-# In route:
-
-def endpoint(db: Session = Depends(get_db)):
-\# use db here
-
-```
-
-**Do NOT use `Depends(SessionLocal)` directly!**  
-This causes problems like the `local_kw` required query parameter error.
-
-### Clearing OpenAPI Schema Cache
-
-If you change route parameters or dependency signatures, clear FastAPI’s OpenAPI schema cache by adding:
-
-```
-
-app.openapi_schema = None
-
-```
-
-and restarting to refresh the docs.
-
----
-
-## Deployment Recommendations
-
-- For production, consider using process managers like Gunicorn with Uvicorn workers.
-- Use environment variables and secret management systems.
-- Set up HTTPS and CORS policies.
-- Clear build caches on deployment platforms to avoid stale API docs issues.
-- Automate migrations during deployment.
-
----
-
-## Contributing
-
-Feel free to fork, create branches for features/bugs, and make pull requests.  
-Please keep consistent code style and add tests for new features.
-
----
+***
 
 ## License
 
 MIT License
 
----
+***
 
 ## Contact
 
-For questions, open an issue on GitHub or contact the maintainer.
+For questions, issues, or contributions, please open a GitHub issue or submit a pull request.
 
 Thank you for using Campus Exchange API!
-```
+
+***
+
+Let me know if you want me to help generate frontend examples or additional documentation for API usage!
+
+<div style="text-align: center">⁂</div>
+
+[^1]: README.md
 

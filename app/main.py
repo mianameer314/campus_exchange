@@ -64,8 +64,8 @@ def create_single_admin():
 
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(verification.router, prefix="/api/v1")
-app.include_router(listings.router, prefix="/api/v1")
 app.include_router(search.router, prefix="/api/v1")
+app.include_router(listings.router, prefix="/api/v1")
 app.include_router(favorites.router, prefix="/api/v1")
 app.include_router(notifications.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
@@ -76,25 +76,3 @@ app.include_router(chat.router, prefix="/api/v1")
 def health():
     return {"status": "ok"}
 
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-    openapi_schema = get_openapi(
-        title=settings.APP_NAME,
-        version=settings.APP_VERSION,
-        description="Custom OpenAPI schema without 'local_kw'",
-        routes=app.routes,
-    )
-    # Remove 'local_kw' from /api/v1/search parameters
-    path = "/api/v1/search"
-    if path in openapi_schema["paths"]:
-        get_op = openapi_schema["paths"][path].get("get", {})
-        parameters = get_op.get("parameters", [])
-        # Filter out 'local_kw' parameter
-        get_op["parameters"] = [
-            p for p in parameters if p.get("name") != "local_kw"
-        ]
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
-
-app.openapi = custom_openapi  # Override the default OpenAPI generation
