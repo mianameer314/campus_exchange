@@ -27,6 +27,8 @@ class Listing(Base):
     owner: Mapped["User"] = relationship("User", back_populates="listings")
     favorites: Mapped[SAList["Favorite"]] = relationship("Favorite", back_populates="listing")
 
+    messages = relationship("ChatMessage", back_populates="listing")
+
     def to_dict(self):
         return {
             "id": self.id,
