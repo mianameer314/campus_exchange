@@ -1,10 +1,3 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
-
-# now update this README file for all days 1 to 4 tasks accoridnly
-
-Here is the updated README file that includes detailed descriptions of the Day 1 to Day 4 tasks reflecting your recent development progress, including database migrations, model updates, search and filter API implementation, and project modularization:
-
-***
 
 # Campus Exchange API
 
