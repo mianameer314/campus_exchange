@@ -199,11 +199,7 @@ For questions, issues, or contributions, please open a GitHub issue or submit a 
 
 Thank you for using Campus Exchange API!
 
-***
 
-Let me know if you want me to help generate frontend examples or additional documentation for API usage!
-
-<div style="text-align: center">⁂</div>
 
 [^1]: README.md
 
