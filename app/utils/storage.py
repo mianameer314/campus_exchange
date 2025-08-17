@@ -4,7 +4,7 @@ from typing import Tuple
 from fastapi import UploadFile
 from app.core.config import settings
 import boto3  # type: ignore
-from botocore.client import Config  # type: ignore
+from botocore.config import Config  # type: ignore
 
 
 def gen_object_key(prefix: str, filename: str) -> str:

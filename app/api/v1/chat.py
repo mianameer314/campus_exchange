@@ -7,6 +7,7 @@ from app.core.config import settings
 from app.api.deps import get_db
 from app.models.chat import ChatMessage, BlockedUser
 from app.models.listing import Listing
+from app.models.user import User
 from app.schemas.chat import ChatMessageOut
 from typing import Dict, List
 import html
@@ -50,7 +51,7 @@ async def get_current_user_websocket(websocket: WebSocket, db: Session):
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             raise Exception("Invalid token: no subject")
         # Optionally verify user in DB
-        user = db.query(Listing).filter(Listing.id == int(user_id)).first()
+        user = db.query(User).filter(User.id == int(user_id)).first()
         if not user:
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             raise Exception("User not found")

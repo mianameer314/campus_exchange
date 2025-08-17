@@ -6,7 +6,7 @@ from typing import Optional
 from app.api.deps import get_db
 from app.models.listing import Listing
 
-router = APIRouter()
+router = APIRouter(tags=["Search"])
 
 @router.get("/listings/search")
 def search_listings(
