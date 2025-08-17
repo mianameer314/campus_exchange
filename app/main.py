@@ -3,12 +3,11 @@ import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.v1 import auth, verification, listings, search, favorites, notifications, admin, ai, chat
+from app.api.v1 import auth, reports, verification, listings, search, favorites, notifications, admin, ai, chat
 from app.db.session import SessionLocal
 from app.models.user import User
 from app.core.security import hash_password
-import os
-from fastapi.openapi.utils import get_openapi
+
 
 log = logging.getLogger("uvicorn.error")
 
@@ -61,16 +60,16 @@ def create_single_admin():
         # Re-raising ensures the container truly exits with an error for Railway to potentially catch better
         raise e 
 
-
+app.include_router(admin.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(verification.router, prefix="/api/v1")
 app.include_router(search.router, prefix="/api/v1")
 app.include_router(listings.router, prefix="/api/v1")
 app.include_router(favorites.router, prefix="/api/v1")
 app.include_router(notifications.router, prefix="/api/v1")
-app.include_router(admin.router, prefix="/api/v1")
 app.include_router(ai.router, prefix="/api/v1")
 app.include_router(chat.router, prefix="/api/v1")
+app.include_router(reports.router, prefix="/api/v1")
 
 @app.get("/healthz", tags=["Health"])
 def health():
