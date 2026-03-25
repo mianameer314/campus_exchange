@@ -9,6 +9,7 @@ from app.models.chat import ChatMessage, BlockedUser
 from app.models.listing import Listing
 from app.models.user import User
 from app.schemas.chat import ChatMessageOut
+from app.utils.url_detection import contains_external_url, EXTERNAL_URL_NOTICE
 from typing import Dict, List
 import html
 import logging
@@ -134,6 +135,15 @@ async def chat_ws(websocket: WebSocket, listing_id: int, peer_id: int, db: Sessi
                 content = html.escape(data["content"].strip())
                 if not content:
                     continue
+
+                # Detect external URLs and notify the sender before persisting.
+                if contains_external_url(data["content"]):
+                    await websocket.send_json({
+                        "notice": {
+                            "type": "external_url_warning",
+                            "message": EXTERNAL_URL_NOTICE,
+                        }
+                    })
 
                 msg_in = {
                     "listing_id": listing_id,
