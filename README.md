@@ -197,3 +197,102 @@ MIT License
 For questions, issues, or contributions, please open a GitHub issue or submit a pull request.
 
 Thank you for using Campus Exchange API!
+
+---
+
+# Urdu HMM POS Tagger — Week 1
+
+A self-contained classical NLP project implementing a Hidden Markov Model (HMM) for Urdu Part-of-Speech tagging, trained on the Universal Dependencies Urdu Treebank (`ur_udtb`).
+
+## Week 1 Scope
+
+| Task | Status |
+|------|--------|
+| Load UD `.conllu` files | ✅ |
+| Minimal Urdu token normalization | ✅ |
+| HMM training (transitions + emissions + Laplace smoothing) | ✅ |
+| Save trained model to JSON | ✅ |
+| Dataset & model statistics / sanity checks | ✅ |
+
+Week 2 will add the Viterbi decoding algorithm and evaluation.
+
+## Dataset — UD Urdu Treebank (`ur_udtb`)
+
+- **Source**: [UniversalDependencies/UD_Urdu-UDTB](https://github.com/UniversalDependencies/UD_Urdu-UDTB)
+- **Size**: ~138K tokens, 16 UPOS tags
+- **Format**: CoNLL-U (`.conllu`)
+
+Place the three split files in `data/ud/`:
+
+```
+data/ud/ur_udtb-ud-train.conllu
+data/ud/ur_udtb-ud-dev.conllu
+data/ud/ur_udtb-ud-test.conllu
+```
+
+The notebook includes an **optional auto-download cell** that clones the repository for you if the files are missing.
+
+## Quick Start
+
+```bash
+# 1. Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. (Optional) place the .conllu files in data/ud/ manually, or let the
+#    notebook download them for you.
+
+# 4. Open and run the notebook
+jupyter notebook notebooks/week1_urdu_hmm_training.ipynb
+```
+
+Run **all cells top to bottom**. The final cell saves the trained model to:
+
+```
+models/hmm_ud_urdu_week1.json
+```
+
+## Expected Outputs
+
+```
+Train:  4043 sentences,  138 521 tokens
+Dev  :   552 sentences,   19 068 tokens
+Test :   535 sentences,   18 444 tokens
+
+Unique UPOS tags : 16
+Vocabulary size  : ~11 000 types  (after UNK replacement)
+
+✓ Model saved → models/hmm_ud_urdu_week1.json
+```
+
+## Project Structure
+
+```
+campus_exchange/
+├── data/
+│   └── ud/                      # Place .conllu files here (gitignored)
+│       └── .gitkeep
+├── models/                      # Trained model output (gitignored except .gitkeep)
+│   └── .gitkeep
+├── notebooks/
+│   └── week1_urdu_hmm_training.ipynb
+├── requirements.txt
+└── environment.yml              # Conda environment (optional)
+```
+
+## Conda environment (optional)
+
+```bash
+conda env create -f environment.yml
+conda activate urdu-hmm
+jupyter notebook notebooks/week1_urdu_hmm_training.ipynb
+```
+
+## References
+
+- Hardie, A. (2002). Developing a tagset for POS tagging in Urdu. *LREC Workshop*.
+- Anwar et al. (2007). HMM-based Urdu POS Tagger. *Information Technology Journal*.
+- UD Urdu Treebank: https://universaldependencies.org/treebanks/ur_udtb/index.html
