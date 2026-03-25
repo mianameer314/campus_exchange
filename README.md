@@ -179,6 +179,25 @@ Supports:
 - `app/db/`: Database session and engine configuration
 - `alembic/`: Database migration scripts
 
+## FAQ / Help
+
+### Can the assistant open external links or web pages?
+
+**No.** The assistant running in this environment cannot visit external websites,
+follow Google Search URLs, or browse the web in any way.
+
+If you want help with something on a web page, you have two easy options:
+
+1. **Paste the text** — Copy the relevant text from the page and paste it directly
+   into the chat.
+2. **Upload a screenshot** — Take a screenshot of the page and upload the image to
+   the chat.
+
+This limitation applies to all external URLs, including Google Search links,
+product pages, news articles, and any other web address.
+
+---
+
 ## Tips & Notes
 
 - Always get DB session via `get_db` dependency to avoid connection issues.
